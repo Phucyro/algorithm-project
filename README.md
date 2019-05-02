@@ -1,0 +1,1 @@
+https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Crossover_for_ordered_lists
