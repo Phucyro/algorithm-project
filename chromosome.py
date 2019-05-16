@@ -5,12 +5,23 @@ class tour():
     """docstring for chromosome."""
 
     def __init__(self, seed):
+
+        #liste de 0 a 20 dans le desodre
         self.tour = [i for i in range(1,20)]
         random.seed(seed)
         random.shuffle(self.tour)
+        print("tour")
+        print(self.tour)
+
+        #liste de 3 int
         self.camion = self.set_camion()
+        print("camion")
+        print(self.camion)
+
         self.tot_dist,self.mean_risk = self.get_total_dist()
+
         self.mean_risk /= 1000
+
         self.mean_risk = round(self.mean_risk,3)
 
     def __str__(self):
@@ -31,10 +42,21 @@ class tour():
         tot_risk = []
         cities = city_parser.CityParser().parse()
 
-        for i in range(0,3):
+        k = 0
+        for ville in cities:
+            print("ville numero {}".format(k))
+            print(ville)
+            k+=1
+
+
+
+        for i in range(0,3): #0,1,2
             risk = []
+            previous = 0
+            print("camion numero {}".format(i))
             for j in range(self.camion[i],self.camion[i+1]):
                 dist= cities[previous].get_dist_to(self.tour[j])
+                print("distance de city {} vers ville {}".format(previous,self.tour[j]))
                 tot_dist += dist
                 risk.append(cities[previous].money*dist)
                 previous = self.tour[j]
@@ -45,10 +67,13 @@ class tour():
 
     def crossover_type_1(self,other):
         cycles = self.detect_cycle(self.tour,other.tour)
+        print("cycles:")
+        print(cycles)
         child1 = [0 for i in range(0,19)]
         child2 = [0 for i in range(0,19)]
         count = 0
         for i in cycles:
+            print("element i")
             print(i)
             if count%2 == 0:
                 for j in i:
@@ -60,8 +85,11 @@ class tour():
                     child2[self.tour.index(j)] = j
                     child1[other.tour.index(j)] = j
             count += 1
+        print("child 1")
         print(child1)
+        print("child 2")
         print(child2)
+
         return None
     def crossover_type_2(self,other):
         #Ecrire different type de crossover
@@ -80,8 +108,6 @@ class tour():
                     cur_cycle.append(i)
                     used.append(i)
                     i = chrom2[chrom1.index(i)]
-
-
 
                 out.append(cur_cycle)
         print(out)
@@ -114,5 +140,9 @@ class tour():
 
 test = tour(59)
 print(test)
-test2 = tour(4194)
+test2 = tour(400)
 print(test2)
+
+print("crossover")
+test.crossover_type_1(test2)
+print(test)
