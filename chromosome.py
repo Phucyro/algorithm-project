@@ -42,21 +42,11 @@ class tour():
         tot_risk = []
         cities = city_parser.CityParser().parse()
 
-        k = 0
-        for ville in cities:
-            print("ville numero {}".format(k))
-            print(ville)
-            k+=1
-
-
-
         for i in range(0,3): #0,1,2
             risk = []
             previous = 0
-            print("camion numero {}".format(i))
             for j in range(self.camion[i],self.camion[i+1]):
                 dist= cities[previous].get_dist_to(self.tour[j])
-                print("distance de city {} vers ville {}".format(previous,self.tour[j]))
                 tot_dist += dist
                 risk.append(cities[previous].money*dist)
                 previous = self.tour[j]
@@ -67,14 +57,10 @@ class tour():
 
     def crossover_type_1(self,other):
         cycles = self.detect_cycle(self.tour,other.tour)
-        print("cycles:")
-        print(cycles)
         child1 = [0 for i in range(0,19)]
         child2 = [0 for i in range(0,19)]
         count = 0
         for i in cycles:
-            print("element i")
-            print(i)
             if count%2 == 0:
                 for j in i:
                     child1[self.tour.index(j)] = j
@@ -85,10 +71,6 @@ class tour():
                     child2[self.tour.index(j)] = j
                     child1[other.tour.index(j)] = j
             count += 1
-        print("child 1")
-        print(child1)
-        print("child 2")
-        print(child2)
 
         return None
     def crossover_type_2(self,other):
@@ -128,10 +110,15 @@ class tour():
 
     def all_unique(self,list):
         list_c = list.copy()
+
         for i in list_c:
             list_c.pop(list_c.index(i))
             if i in list_c:
                 return False
+
+        if (list[0] == 0): #Eviter d'avoir le premier camion qui ne fait pas de trajet
+            return False
+
         return True
 
     def mean(self,list):
