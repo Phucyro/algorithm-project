@@ -144,6 +144,8 @@ class tour():
     def addDominated(self, dominated):
         self.dominatesList.append(dominated)
 
+    def removeDominated(self, dominated):
+        self.dominatesList.remove(dominated)
 
     def incrementDominationCount(self):
         self.undergoDominationCount += 1
@@ -151,15 +153,16 @@ class tour():
     def decrementDominationCount(self):
         self.undergoDominationCount -= 1
 
-
     def print_domination(self):
         print("nombre de solutions qu on domine {} et nombre de dominations subies {}".format(len(self.dominatesList), self.undergoDominationCount))
 
     def getDominationCount(self):
         return self.undergoDominationCount
 
-    def getDominateList(self):
+    def getDominatedList(self):
         return self.dominatesList
+
+
 
 
 """"
