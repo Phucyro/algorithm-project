@@ -24,6 +24,10 @@ class tour():
 
         self.mean_risk = round(self.mean_risk,3)
 
+        self.undergoDominationCount = 0
+
+        self.dominatesList = list()
+
     def __str__(self):
         cities = city_parser.CityParser().parse()
         out = ""
@@ -124,7 +128,45 @@ class tour():
     def mean(self,list):
         return sum(list)/float(len(list))
 
+    def dominates(self, other):
 
+        distValue, riskValue = self.get_total_dist()
+
+        otherDistValue , otherRiskValue = other.get_total_dist()
+
+        """
+        print("distValue : {}, riskValue : {}".format(distValue, riskValue))
+        print("otherDistValue: {}, otherRiskValue: {}".format(otherDistValue, otherRiskValue))
+        """
+
+        if (distValue <= otherDistValue and riskValue <= otherRiskValue) and (distValue < otherDistValue or riskValue < otherRiskValue):
+            return True
+        else:
+            return False
+
+
+    def addDominated(self, dominated):
+        self.dominatesList.append(dominated)
+
+
+    def incrementDominationCount(self):
+        self.undergoDominationCount += 1
+
+    def decrementDominationCount(self):
+        self.undergoDominationCount -= 1
+
+
+    def print_domination(self):
+        print("nombre de solutions qu on domine {} et nombre de dominations subies {}".format(len(self.dominatesList), self.undergoDominationCount))
+
+    def getDominationCount(self):
+        return self.undergoDominationCount
+
+    def getDominateList(self):
+        return self.dominatesList
+
+
+""""
 test = tour(59)
 print(test)
 test2 = tour(400)
@@ -133,3 +175,4 @@ print(test2)
 print("crossover")
 test.crossover_type_1(test2)
 print(test)
+"""
