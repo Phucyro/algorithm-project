@@ -10,13 +10,9 @@ class tour():
         self.tour = [i for i in range(1,20)]
         random.seed(seed)
         random.shuffle(self.tour)
-        print("tour")
-        print(self.tour)
 
-        #liste de 3 int
+        #liste de 4 ints commencant par 0, mais pas de 0 en index 1
         self.camion = self.set_camion()
-        print("camion")
-        print(self.camion)
 
         self.tot_dist,self.mean_risk = self.get_total_dist()
 
