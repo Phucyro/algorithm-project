@@ -1,14 +1,16 @@
 import chromosome
 import random
+import copy
 
 class nsga2():
 
     def __init__(self, nombrePop):
 
-        self.sizePop = nombrePop
+        self.popSize = nombrePop
 
         self.population = list()
         self.front = list()
+
 
 
     def init_population(self,seed):
@@ -16,17 +18,15 @@ class nsga2():
 
         random.seed(seed)
 
-        for i in range(self.sizePop):
+        for i in range(self.popSize):
 
             solution = chromosome.tour(random.randint(0,1000))
             self.population.append(solution)
 
+
     def non_dominated_sorting(self):
 
-        firstFront = self.population.copy() #copie la population dans le front 0 (pareto)
         frontIndex = 0
-
-        self.front.append(firstFront)
 
         #Pour tous les elements deux a deux, on regarde qui domine qui
         for i in range(len(self.front[frontIndex])):
@@ -51,9 +51,18 @@ class nsga2():
         #liste qui va garder les solutions a deplacer au rank suivant (car dominationCount != 0)
         toMove = list()
 
-        while frontIndex < 2:
+        while frontIndex < 3:
 
             newFront = list()
+
+            solutionNonDominatedInFrontIndex = True
+
+            for solution in self.front[frontIndex]:
+                if solution.getDominationCount == 0:
+                    solutionNonDominatedInFrontIndex = False
+
+            if solutionNonDominatedInFrontIndex == False:
+                break
 
             #Debut deplacement solution
 
@@ -86,7 +95,7 @@ class nsga2():
             toMove.clear()
 
 
-        print("Au final: on a donc pour les 3 ranks :")
+        print("Fin dominated sorting:")
         k = 0
         for rank in self.front:
             k+=1
@@ -96,8 +105,90 @@ class nsga2():
                 print("Solution avec tot dist {} et tot risk {}".format(tot_dist,tot_risk))
 
 
+    def createOffsprings(self):
+
+        self.front.clear()
+
+        firstFront = copy.deepcopy(self.population)
+        self.front.append(firstFront)
+
+        for i in range(len(self.population)):
+            for j in range(i+1, len(self.population)):
+
+                newSolution = copy.deepcopy(self.population[i])
+                toCross = copy.deepcopy(self.population[j])
+
+                newSolution.crossover_type_1(toCross)
+
+                self.front[0].append(newSolution)
+
+                if len(self.front[0]) >= self.popSize:
+                    break
+                else:
+                    continue
+
+            if len(self.front[0]) >= self.popSize:
+                break
+
+
+    def combineAndSort(self):
+
+        for pop in self.population:
+
+            self.front[0].append(copy.deepcopy(pop))
+
+        self.non_dominated_sorting()
+
+    def choosePopulation(self):
+
+        self.population.clear()
+
+        for rank in self.front:
+            for solution in rank:
+
+                if len(self.population) < self.popSize:
+                    self.population.append(solution)
+
+                else:
+                    break
+
+            if len(self.population) >= self.popSize:
+                break
+
+    def showResultPareto(self):
+
+        k=0
+        for rank in self.front:
+
+            k += 1
+            if k != 1:
+                print("Rank {} non parreto :".format(k))
+            else:
+                print("Rank Parreto!")
+
+            for solution in rank:
+
+                tot_dist, tot_risk = solution.get_total_dist()
+                print("Solution avec tot dist {} et tot risk {}".format(tot_dist, tot_risk))
+
+
 test = nsga2(30)
 test.init_population(100)
-test.non_dominated_sorting()
+
+i=0
+
+while (i<5):
+
+    test.createOffsprings()
+    test.combineAndSort()
+    test.choosePopulation()
+
+    i+=1
+
+
+test.showResultPareto()
+
+
+
 
 

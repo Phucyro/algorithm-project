@@ -92,7 +92,7 @@ class tour():
                     i = chrom2[chrom1.index(i)]
 
                 out.append(cur_cycle)
-        print(out)
+
         return out
 
     def get_fitness_score(self):
@@ -161,6 +161,18 @@ class tour():
 
     def getDominatedList(self):
         return self.dominatesList
+
+    def isSameAs(self, other):
+
+        distValue, riskValue = self.get_total_dist()
+
+        otherDistValue, otherRiskValue = other.get_total_dist()
+
+        if distValue == otherDistValue and riskValue == otherRiskValue:
+            return True
+
+        else:
+            return False
 
 
 
