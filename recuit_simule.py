@@ -5,7 +5,7 @@ import city_parser
 from matplotlib import pyplot as plt
 from matplotlib import style
 
-NBRE_RES = 100 #Number of solutions that is going to be computed
+NBRE_RES = 20 #Number of solutions that is going to be computed
 TIME_PER_SOL = 0.2 #Number of minutes allowed to optimize a solution
 
 class recuit(Annealer): #We use simanneal that implement the Annealer Simulated algorithm
@@ -39,7 +39,7 @@ def soltions_to_csv(solutions,name):
     cities = city_parser.CityParser().parse()
     output = open(str(name)+".csv", "w")
     for a in solutions:
-        for i in range(0,3): #0,1,2
+        for i in range(0,3): #iterate on each truck
             output.write("0;")
             money = "0;"
             curr_money = 0
@@ -61,14 +61,10 @@ to_show = []
 #This loop compute the values with the annealar simulated algorithm
 for i in range(0,NBRE_RES):
     print(str(i)+"/"+str(NBRE_RES)+"\n")
-    init_state = chromosome.tour()
-    rec = recuit(init_state)
-    #rec.steps = 41000
-    #rec.tmin = 330.0
-    #rec.tmax = 330000.0
-    #rec.steps = 10000
-    rec.set_schedule(auto_schedule)
-    it,miles = rec.anneal()
+    init_state = chromosome.tour() #Create a random solution
+    rec = recuit(init_state) #Create the Annealer simulation
+    rec.set_schedule(auto_schedule) #Set the max / min temperature and the nbre of steps
+    it,miles = rec.anneal() #Run the simulation
     to_show.append(it)
 
 
@@ -79,7 +75,7 @@ pareto,other = get_pareto(to_show) #Compute the pareto optimum values
 
 risk_p = []
 dist_p = []
-for j in to_show:
+for j in pareto:
     risk_p.append(j.mean_risk)
     dist_p.append(j.tot_dist)
 

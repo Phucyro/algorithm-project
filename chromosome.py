@@ -15,13 +15,13 @@ class tour():
         self.cities = city_parser.CityParser().parse()
         self.TOT_MONEY = 0
         for i in self.cities:
-            self.TOT_MONEY += i.money
+            self.TOT_MONEY += i.money #Compute the total money available
 
-        while not self.respect_constraint():
+        while not self.respect_constraint(): #Create a random solution that respect the constraint
             random.shuffle(self.tour)
             self.camion = self.set_camion()
 
-        self.tot_dist,self.mean_risk = self.get_total_dist()
+        self.tot_dist,self.mean_risk = self.get_total_dist() #Compute the risk and distane
 
         self.mean_risk /= 10000
 
@@ -43,6 +43,7 @@ class tour():
 
 
     def change_to_neighboor(self):
+        """This function turn the solution into one of her neighboor"""
         a = random.randint(1, len(self.tour) - 1)
         b = random.randint(1, len(self.tour) - 1)
         self.tour[a], self.tour[b] = self.tour[b], self.tour[a] #Swap two self.cities in the tour
@@ -53,6 +54,7 @@ class tour():
 
 
     def get_total_dist(self):
+        """This function compute the risk and the total distance of the solution"""
         tot_dist = 0
         tot_risk = []
 
@@ -73,11 +75,12 @@ class tour():
         return (tot_dist,round(self.mean(tot_risk),2))
 
     def crossover_type_1(self,other):
-        cycles = self.detect_cycle(self.tour,other.tour)
+        """Make a cycle crossover between two solutions"""
+        cycles = self.detect_cycle(self.tour,other.tour) #Get the cycle in the two solutions
         child1 = [0 for i in range(0,19)]
         child2 = [0 for i in range(0,19)]
         count = 0
-        for i in cycles:
+        for i in cycles: #This loop create the two children with the cycles
             if count%2 == 0:
                 for j in i:
                     child1[self.tour.index(j)] = j
@@ -97,6 +100,7 @@ class tour():
         #Ecrire different type de crossover
         return None
     def detect_cycle(self,chrom1,chrom2):
+        """This function detect the cycle in 2 solutions"""
         used = list()
         out = list()
         cur_cycle = list()
@@ -113,12 +117,14 @@ class tour():
         return out
 
     def get_fitness_score(self):
+        """This fucntion return the fitness score of the solution (The lower the better)"""
         self.tot_dist,self.mean_risk = self.get_total_dist()
         self.mean_risk /= 10000
         self.mean_risk = round(self.mean_risk,3)
         return self.tot_dist + self.mean_risk
 
     def set_camion(self):
+        """This function divide the solutions in 3 part (for 3 trucks)"""
         camion = [0,0,19]
         while not self.all_unique(camion):
             previous = 1
@@ -129,6 +135,7 @@ class tour():
         return camion
 
     def all_unique(self,list):
+        """This function check that all element in a list are unique"""
         list_c = list.copy()
 
         for i in list_c:
@@ -151,18 +158,18 @@ class tour():
         """Check if no truck goes through the 3 biggest cities (1,2,10) and if no truck
         carries more than the half of all the money available"""
         trucks = []
-        for i in range(0,3): #0,1,2
+        for i in range(0,3): #This loop create a list of list (one list = one truck tour)
             truck = []
             for j in range(self.camion[i],self.camion[i+1]):
                 truck.append(self.tour[j])
             trucks.append(truck)
         for i in trucks:
             money = 0
-            if 1 in i and 2 in i and 10 in i:
+            if 1 in i and 2 in i and 10 in i: #Check if the truck don't goes through the 3 biggest cities
                     return False
             for j in i:
                 money += self.cities[self.tour[j-1]].money
-            if money >= self.TOT_MONEY/2:
+            if money >= self.TOT_MONEY/2: #Check if the truck doesn't carry more than the half of all the money
                 return False
         return True
 
