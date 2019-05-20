@@ -55,39 +55,41 @@ class nsga2():
 
             newFront = list()
 
-            solutionNonDominatedInFrontIndex = True
+            """solutionNonDominatedInFrontIndex = True
 
             for solution in self.front[frontIndex]:
                 if solution.getDominationCount == 0:
                     solutionNonDominatedInFrontIndex = False
 
             if solutionNonDominatedInFrontIndex == False:
-                break
+                break"""
 
             #Debut deplacement solution
-
-            for solution in self.front[frontIndex]:
+            #print(str(len(self.front[frontIndex])) + "\n ----------") 
+            for solution in list(self.front[frontIndex]):
 
                 if solution.getDominationCount() != 0:
 
-                    toMove.append(solution)
+                    newFront.append(solution) #ajout dans le nouveau front
+                    self.front[frontIndex].remove(solution) #on le retire du front precedent
+                else:
+                    listeDomines = solution.getDominatedList()
 
-            for solution in toMove:
+                    for domines in listeDomines:
 
-                newFront.append(solution) #ajout dans le nouveau front
-                self.front[frontIndex].remove(solution) #on le retire du front precedent
+                        domines.decrementDominationCount()
+
+            #for solution in toMove:
+            #print(len(newFront))
+            #print(len(self.front[frontIndex]))    
 
             #On regarde dans le front en frontIndex pour voir les villes que ses solutions dominent
             #par exemple si la solution non dominee A domine la solution B,C
             # on va decrementer B,C de 1 au niveau du dominationCount
 
-            for solution in self.front[frontIndex]:
+            #for solution in self.front[frontIndex]:
 
-                listeDomines = solution.getDominatedList()
-
-                for domines in listeDomines:
-
-                    domines.decrementDominationCount()
+                
 
             #on rajoute le front dans self.front et on reitere
             self.front.append(newFront)
