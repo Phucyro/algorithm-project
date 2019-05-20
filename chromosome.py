@@ -9,9 +9,17 @@ class tour():
         self.tour = [i for i in range(1,20)]
         #random.seed(seed)
         random.shuffle(self.tour)
-
         #liste de 4 ints commencant par 0, mais pas de 0 en index 1
         self.camion = self.set_camion()
+
+        self.cities = city_parser.CityParser().parse()
+        self.TOT_MONEY = 0
+        for i in self.cities:
+            self.TOT_MONEY += i.money
+
+        while not self.respect_constraint():
+            random.shuffle(self.tour)
+            self.camion = self.set_camion()
 
         self.tot_dist,self.mean_risk = self.get_total_dist()
 
@@ -24,21 +32,29 @@ class tour():
         self.dominatesList = list()
 
     def __str__(self):
-        cities = city_parser.CityParser().parse()
         out = ""
         for i in range(0,3):
             out += "The truck " + str(i+1) +" goes through : "
             for j in range(self.camion[i],self.camion[i+1]):
-                out += cities[self.tour[j]].name + ", "
+                out += self.cities[self.tour[j]].name + ", "
             out += "\n"
         out += "And the mean risk of this tour is : "+str(self.mean_risk) + " with a total distance of : " + str(self.tot_dist)
         return out
 
 
+    def change_to_neighboor(self):
+        a = random.randint(1, len(self.tour) - 1)
+        b = random.randint(1, len(self.tour) - 1)
+        self.tour[a], self.tour[b] = self.tour[b], self.tour[a] #Swap two self.cities in the tour
+        while not self.respect_constraint():
+                a = random.randint(1, len(self.tour) - 1)
+                b = random.randint(1, len(self.tour) - 1)
+                self.tour[a], self.tour[b] = self.tour[b], self.tour[a] #Swap two self.cities in the tour
+
+
     def get_total_dist(self):
         tot_dist = 0
         tot_risk = []
-        cities = city_parser.CityParser().parse()
 
         for i in range(0,3): #0,1,2
             risk = []
@@ -46,12 +62,12 @@ class tour():
             cur_money = 0
 
             for j in range(self.camion[i],self.camion[i+1]):
-                dist= cities[previous].get_dist_to(self.tour[j])
+                dist= self.cities[previous].get_dist_to(self.tour[j])
                 tot_dist += dist
-                cur_money += cities[previous].money
+                cur_money += self.cities[previous].money
                 risk.append(cur_money*dist)
                 previous = self.tour[j]
-            tot_dist += cities[previous].get_dist_to(0)
+            tot_dist += self.cities[previous].get_dist_to(0)
             tot_risk.append(self.mean(risk))
 
         return (tot_dist,round(self.mean(tot_risk),2))
@@ -131,6 +147,29 @@ class tour():
         else:
             return 0
 
+    def respect_constraint(self):
+        """Check if no truck goes through the 3 biggest cities (1,2,10) and if no truck
+        carries more than the half of all the money available"""
+        trucks = []
+        for i in range(0,3): #0,1,2
+            truck = []
+            for j in range(self.camion[i],self.camion[i+1]):
+                truck.append(self.tour[j])
+            trucks.append(truck)
+        for i in trucks:
+            money = 0
+            if 1 in i and 2 in i and 10 in i:
+                    return False
+            for j in i:
+                money += self.cities[self.tour[j-1]].money
+            if money >= self.TOT_MONEY/2:
+                return False
+        return True
+
+
+
+
+
     def dominates(self, other):
 
         distValue, riskValue = self.get_total_dist()
@@ -170,10 +209,7 @@ class tour():
         return self.dominatesList
 
 
-
-
 """"
-test = tour(59)
 print(test)
 test2 = tour(400)
 print(test2)
@@ -182,4 +218,3 @@ print("crossover")
 test.crossover_type_1(test2)
 print(test)
 """
-

@@ -1,49 +1,66 @@
 from simanneal import Annealer
 import chromosome
 import random
+import city_parser
 from matplotlib import pyplot as plt
 from matplotlib import style
 
-NBRE_RES = 150 #Number of solutions that is going to be computed
-TIME_PER_SOL = 0.02 #Number of minutes allowed to optimize a solution
+NBRE_RES = 100 #Number of solutions that is going to be computed
+TIME_PER_SOL = 0.2 #Number of minutes allowed to optimize a solution
 
-class recuit(Annealer):
+class recuit(Annealer): #We use simanneal that implement the Annealer Simulated algorithm
 
     def __init__(self,state):
         super(recuit,self).__init__(state)
 
     def move(self): #This function get a neighboor solution of the current solution
-        a = random.randint(1, len(self.state.tour) - 1)
-        b = random.randint(1, len(self.state.tour) - 1)
-        self.state.tour[a], self.state.tour[b] = self.state.tour[b], self.state.tour[a] #Swap two cities in the tour
-        return None
-    def energy(self):
+        self.state.change_to_neighboor()
+
+    def energy(self): #This function get the "energy" of the solution
         return self.state.get_fitness_score()
 
 
 def get_pareto(list):
+    """This function get the pareto optimum solutions from a list of solutions """
     pareto = []
     other = []
     for i in list:
         for j in list:
             if j != i:
-                if i.tot_dist > j.tot_dist and i.mean_risk > j.mean_risk :
+                if i.tot_dist > j.tot_dist and i.mean_risk > j.mean_risk : #If solution i is dominated by atleast one solution it's not part of the pareto
                     other.append(i)
     for i in list:
-        if i not in other:
+        if i not in other: #Every solution that is not dominated is part of the pareto
             pareto.append(i)
     return pareto,other
+
+def soltions_to_csv(solutions,name):
+    """This function create a CSV file with all the solution from a list of solutions"""
+    cities = city_parser.CityParser().parse()
+    output = open(str(name)+".csv", "w")
+    for a in solutions:
+        for i in range(0,3): #0,1,2
+            output.write("0;")
+            money = "0;"
+            curr_money = 0
+            for j in range(a.camion[i],a.camion[i+1]):
+                output.write(str(a.tour[j])+";")
+                curr_money += cities[a.tour[j]].money
+                money += str(round(curr_money,2))+";"
+            output.write("0;\n")
+            output.write(money+"\n")
 
 
 
 init_state = chromosome.tour()
 rec = recuit(init_state)
-auto_schedule = rec.auto(minutes=TIME_PER_SOL)
+auto_schedule = rec.auto(minutes=TIME_PER_SOL) #Get the parameters so that every solutions in computed in TIME_PER_SOL * minutes
 
 
 to_show = []
 #This loop compute the values with the annealar simulated algorithm
 for i in range(0,NBRE_RES):
+    print(str(i)+"/"+str(NBRE_RES)+"\n")
     init_state = chromosome.tour()
     rec = recuit(init_state)
     #rec.steps = 41000
@@ -81,6 +98,7 @@ for i in pareto:
 
 text_file.close()
 
+soltions_to_csv(pareto, "AnnealerSimulated")
 
 #Make a graph with the soltions
 style.use('ggplot')
@@ -91,5 +109,5 @@ plt.title('Annealar')
 plt.ylabel('Total Distance (m)')
 plt.xlabel('Risk')
 plt.autoscale(enable = True,axis='both')
-plt.show()
 plt.savefig(str(NBRE_RES)+"_"+str(TIME_PER_SOL)+".png")
+plt.show()
