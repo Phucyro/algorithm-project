@@ -122,7 +122,12 @@ class nsga2():
 
                 newSolution.crossover_type_1(toCross)
 
-                self.front[0].append(newSolution)
+                if self.findDuplicate(newSolution, self.front[0]):
+                    print("Impossible, duplicate found")
+
+                else:
+                    print("Solution ajoutee au front [0]")
+                    self.front[0].append(newSolution)
 
                 if len(self.front[0]) >= self.popSize:
                     break
@@ -131,6 +136,21 @@ class nsga2():
 
             if len(self.front[0]) >= self.popSize:
                 break
+
+    def findDuplicate(self, solution, front):
+
+        duplicate = False
+
+        dist, risk = solution.get_total_dist()
+
+        for sol in front:
+            sol_dist, sol_risk = sol.get_total_dist()
+
+            if dist == sol_dist and risk == sol_risk:
+                print("Duplicate found")
+                duplicate = True
+
+        return duplicate
 
 
     def combineAndSort(self):
@@ -170,16 +190,14 @@ class nsga2():
 
             for solution in rank:
 
-                tot_dist, tot_risk = solution.get_total_dist()
-                print("Solution avec tot dist {} et tot risk {}".format(tot_dist, tot_risk))
-
+                print(solution)
 
 test = nsga2(30)
 test.init_population(100)
 
 i=0
 
-while (i<5):
+while (i<10):
 
     test.createOffsprings()
     test.combineAndSort()
