@@ -113,7 +113,7 @@ class tour():
                     i = chrom2[chrom1.index(i)]
 
                 out.append(cur_cycle)
-        print(out)
+
         return out
 
     def get_fitness_score(self):
@@ -174,19 +174,12 @@ class tour():
         return True
 
 
-
-
-
     def dominates(self, other):
+        """return true if solution dominates other"""
 
         distValue, riskValue = self.get_total_dist()
 
         otherDistValue , otherRiskValue = other.get_total_dist()
-
-        """
-        print("distValue : {}, riskValue : {}".format(distValue, riskValue))
-        print("otherDistValue: {}, otherRiskValue: {}".format(otherDistValue, otherRiskValue))
-        """
 
         if (distValue <= otherDistValue and riskValue <= otherRiskValue) and (distValue < otherDistValue or riskValue < otherRiskValue):
             return True
@@ -216,12 +209,3 @@ class tour():
         return self.dominatesList
 
 
-""""
-print(test)
-test2 = tour(400)
-print(test2)
-
-print("crossover")
-test.crossover_type_1(test2)
-print(test)
-"""
