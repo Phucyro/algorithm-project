@@ -1,0 +1,4 @@
+The truck 1 goes through : Evere, Woluwe-Saint-Pierre, Woluwe-Saint-Lambert, Watermael-Boitsfort, Auderghem, Etterbeek, Ixelles, Bruxelles, Jette, Schaerbeek, 
+The truck 2 goes through : Saint-Josse-ten-Noode, Forest, Anderlecht, Molenbeek-Saint-Jean, Ganshoren, Berchem-Sainte-Agathe, 
+The truck 3 goes through : Koekelberg, Uccle, Saint-Gilles, 
+And the mean risk of this tour is : 38347.842 with a total distance of : 87600
