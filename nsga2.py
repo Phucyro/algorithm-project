@@ -151,24 +151,6 @@ class nsga2():
         """ choose next generation population (no duplicate) """
 
         self.population.clear()
-        """randomList = {}
-        lenFront = len(self.front) - 1
-        if lenFront > 0:
-            while len(self.population) < self.popSize:
-                i = random.randint(0, lenFront)
-                lenSol = len(self.front[i]) - 1
-                if lenSol > 0:
-                    j = random.randint(0, lenSol)
-                    if not self.findDuplicate(self.front[i][j], self.population):
-                        if i in randomList:
-                            if j in randomList[i]:
-                                continue
-                            else:
-                                randomList[i].append(j)
-                                self.population.append(self.front[i][j])
-                        else:
-                            randomList[i] = [j]
-                            self.population.append(self.front[i][j])"""
 
         for rank in self.front:
 
@@ -178,10 +160,7 @@ class nsga2():
                     if len(self.population) < self.popSize:
                         self.population.append(solution)
                     else:
-                        break
-
-            if len(self.population) >= self.popSize:
-                break
+                        return None
 
 
     def showResultPareto(self):
