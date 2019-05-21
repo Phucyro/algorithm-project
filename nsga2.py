@@ -3,6 +3,7 @@ import random
 import copy
 from matplotlib import pyplot as plt
 from matplotlib import style
+from CSV import solutions_to_csv
 
 
 class nsga2():
@@ -20,12 +21,12 @@ class nsga2():
 
         random.seed(self.seed)
 
-        for i in range(self.popSize):
+        for _ in range(self.popSize):
             solution = chromosome.tour(random.randint(0, 1000))
             self.population.append(solution)
 
     def non_dominated_sorting(self):
-        """ Trie les solutions stockees dans front en fonction du principe de dominance """
+        """ Sort solutions saved in the front according to the principle of dominance """
 
         frontIndex = 0
 
@@ -40,7 +41,6 @@ class nsga2():
                 if (firstChallenger.dominates(secondChallenger)):
                     firstChallenger.addDominated(secondChallenger)
                     secondChallenger.incrementDominationCount()
-
 
                 elif (secondChallenger.dominates(firstChallenger)):
                     secondChallenger.addDominated(firstChallenger)
@@ -64,7 +64,8 @@ class nsga2():
                 if solution.getDominationCount() != 0:
 
                     newFront.append(solution)  # ajout dans le nouveau front
-                    self.front[frontIndex].remove(solution)  # on le retire du front precedent
+                    # on le retire du front precedent
+                    self.front[frontIndex].remove(solution)
 
                 else:
 
@@ -78,7 +79,6 @@ class nsga2():
                     for domines in listeDomines:
                         domines.decrementDominationCount()
 
-
             # on rajoute le front dans self.front et on reitere
             self.front.append(newFront)
             frontIndex += 1
@@ -91,10 +91,11 @@ class nsga2():
             print("Rank {} :".format(k))
             for solution in rank:
                 tot_dist, tot_risk = solution.get_total_dist()
-                print("Solution avec tot dist {} et tot risk {}".format(tot_dist, tot_risk))
+                print("Solution avec tot dist {} et tot risk {}".format(
+                    tot_dist, tot_risk))
 
     def createOffsprings(self):
-        """ create offsprings through crossover and population solutions """
+        """ Create offsprings through crossover and population solutions """
 
         self.front.clear()
 
@@ -140,7 +141,7 @@ class nsga2():
         return duplicate
 
     def combineAndSort(self):
-        """ combine population and front and use the non dominated sorting """
+        """Combine population and front and use the non dominated sorting """
 
         for pop in self.population:
             self.front[0].append(copy.deepcopy(pop))
@@ -148,7 +149,7 @@ class nsga2():
         self.non_dominated_sorting()
 
     def choosePopulation(self):
-        """ choose next generation population (no duplicate) """
+        """Choose next generation population (no duplicate) """
 
         self.population.clear()
 
@@ -156,12 +157,11 @@ class nsga2():
 
             for solution in rank:
                 # check if the current solution is already in population
-                if not self.findDuplicate(solution, self.population):   
+                if not self.findDuplicate(solution, self.population):
                     if len(self.population) < self.popSize:
                         self.population.append(solution)
                     else:
                         return None
-
 
     def showResultPareto(self):
         """ print pareto frontier results """
@@ -170,7 +170,10 @@ class nsga2():
 
         k = 0
         risk_p = []
+        pareto = []
         dist_p = []
+        text_file = open(str(self.popSize)+"_" +
+                         str(random.randint(0, 100))+".txt", "w")
 
         for rank in self.front:
             k += 1
@@ -184,41 +187,43 @@ class nsga2():
             dist_p.append([])
             for solution in rank:
                 tot_dist, tot_risk = solution.get_total_dist()
-                if k == 1:
-                    risk_p[0].append(tot_risk)
-                    dist_p[0].append(tot_dist)
-                else:
-                    risk_p[k-1].append(tot_risk)
-                    dist_p[k-1].append(tot_dist)
-                print("Solution avec tot dist {} et tot risk {}".format(tot_dist, tot_risk))
-        self.createPlot(risk_p, dist_p)
-
-    def createPlot(self, risk_p, dist_p):
-        
-        """text_file = open(str(self.popSize)+"_"+str(TIME_PER_SOL)+".txt", "w")
-        for i in pareto:
-            text_file.write(str(i)+"\n")
-
+                if tot_dist not in dist_p[k-1] or tot_risk not in risk_p[k-1]: # no duplicates
+                    if k == 1:
+                        pareto.append(solution)
+                        text_file.write(str(solution)+"\n")
+                        risk_p[0].append(tot_risk)
+                        dist_p[0].append(tot_dist)
+                    else:
+                        risk_p[k-1].append(tot_risk)
+                        dist_p[k-1].append(tot_dist)
+                    print("Solution avec tot dist {} et tot risk {}".format(
+                        tot_dist, tot_risk))
         text_file.close()
+        self.createPlot(risk_p, dist_p, pareto)
 
-        soltions_to_csv(pareto, "AnnealerSimulated")"""
+    def createPlot(self, risk_p, dist_p, pareto):
+        """Create and show a plot of all pareto solutions and other fronts solutions"""
+        solutions_to_csv(pareto, "NSGAII")
 
-        #Make a graph with the soltions
+        # Make a graph with the soltions
         style.use('ggplot')
-        f, ax = plt.subplots(1)
-        plt.scatter(risk_p[0],dist_p[0],c="blue") # Pareto optimum colored in blue
-        plt.scatter(risk_p[1],dist_p[1],c="yellow") # Front 2 colored in yellow
-        plt.scatter(risk_p[2],dist_p[2],c="green") # Front 3 colored in green
-        plt.scatter(risk_p[3],dist_p[3],c="red") # Front 4 colored in red
+        plt.subplots(1)
+        # Pareto optimum colored in blue
+        plt.scatter(risk_p[0], dist_p[0], c="blue")
+        # Front 2 colored in yellow
+        plt.scatter(risk_p[1], dist_p[1], c="yellow")
+        # Front 3 colored in green
+        plt.scatter(risk_p[2], dist_p[2], c="green")
+        plt.scatter(risk_p[3], dist_p[3], c="red")  # Front 4 colored in red
         plt.title('NSGA II')
         plt.ylabel('Total Distance (m)')
         plt.xlabel('Risk')
-        plt.autoscale(enable = True,axis='both')
-        plt.savefig(str(self.popSize)+"_str(TIME_PER_SOL).png")
+        plt.autoscale(enable=True, axis='both')
+        plt.savefig(str(self.popSize)+"_"+str(random.randint(0, 100))+".png")
         plt.show()
 
     def execute(self):
-
+        """Execute all the functions to handle NSGA II algorithm"""
         self.init_population()
 
         i = 0
@@ -228,15 +233,6 @@ class nsga2():
             self.combineAndSort()
             self.choosePopulation()
 
-            i+=1
+            i += 1
 
         self.showResultPareto()
-
-
-
-
-
-
-
-
-

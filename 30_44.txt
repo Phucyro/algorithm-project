@@ -1,0 +1,20 @@
+The truck 1 goes through : Evere, Bruxelles, Molenbeek-Saint-Jean, Jette, Watermael-Boitsfort, Ixelles, 
+The truck 2 goes through : Anderlecht, Berchem-Sainte-Agathe, Ganshoren, Forest, 
+The truck 3 goes through : Saint-Gilles, Uccle, Koekelberg, Saint-Josse-ten-Noode, Schaerbeek, Woluwe-Saint-Pierre, Etterbeek, Auderghem, Woluwe-Saint-Lambert, 
+And the mean risk of this tour is : 74770.325 with a total distance of : 110000
+The truck 1 goes through : Etterbeek, Anderlecht, Ganshoren, Molenbeek-Saint-Jean, Woluwe-Saint-Lambert, 
+The truck 2 goes through : Uccle, Forest, Watermael-Boitsfort, Ixelles, Saint-Gilles, Evere, Schaerbeek, Auderghem, Woluwe-Saint-Pierre, 
+The truck 3 goes through : Bruxelles, Berchem-Sainte-Agathe, Koekelberg, Saint-Josse-ten-Noode, Jette, 
+And the mean risk of this tour is : 72322.245 with a total distance of : 112800
+The truck 1 goes through : Ixelles, Etterbeek, Watermael-Boitsfort, Koekelberg, Forest, Uccle, Berchem-Sainte-Agathe, Jette, Anderlecht, Saint-Josse-ten-Noode, Saint-Gilles, 
+The truck 2 goes through : Evere, Molenbeek-Saint-Jean, 
+The truck 3 goes through : Ganshoren, Woluwe-Saint-Lambert, Schaerbeek, Auderghem, Woluwe-Saint-Pierre, Bruxelles, 
+And the mean risk of this tour is : 58639.089 with a total distance of : 120100
+The truck 1 goes through : Ganshoren, Evere, Jette, Uccle, Saint-Gilles, Berchem-Sainte-Agathe, 
+The truck 2 goes through : Forest, Watermael-Boitsfort, Auderghem, Woluwe-Saint-Pierre, Schaerbeek, Saint-Josse-ten-Noode, Etterbeek, Ixelles, 
+The truck 3 goes through : Anderlecht, Molenbeek-Saint-Jean, Woluwe-Saint-Lambert, Koekelberg, Bruxelles, 
+And the mean risk of this tour is : 60368.399 with a total distance of : 115300
+The truck 1 goes through : Anderlecht, Ganshoren, Watermael-Boitsfort, Uccle, Evere, Bruxelles, Ixelles, 
+The truck 2 goes through : Koekelberg, Molenbeek-Saint-Jean, Berchem-Sainte-Agathe, Saint-Gilles, Schaerbeek, Jette, 
+The truck 3 goes through : Forest, Etterbeek, Woluwe-Saint-Lambert, Saint-Josse-ten-Noode, Woluwe-Saint-Pierre, Auderghem, 
+And the mean risk of this tour is : 65633.644 with a total distance of : 121500

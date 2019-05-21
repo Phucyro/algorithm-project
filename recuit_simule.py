@@ -4,6 +4,7 @@ import random
 import city_parser
 from matplotlib import pyplot as plt
 from matplotlib import style
+from CSV import solutions_to_csv
 
 NBRE_RES = 20 #Number of solutions that is going to be computed
 TIME_PER_SOL = 0.2 #Number of minutes allowed to optimize a solution
@@ -33,24 +34,6 @@ def get_pareto(list):
         if i not in other: #Every solution that is not dominated is part of the pareto
             pareto.append(i)
     return pareto,other
-
-def soltions_to_csv(solutions,name):
-    """This function create a CSV file with all the solution from a list of solutions"""
-    cities = city_parser.CityParser().parse()
-    output = open(str(name)+".csv", "w")
-    for a in solutions:
-        for i in range(0,3): #iterate on each truck
-            output.write("0;")
-            money = "0;"
-            curr_money = 0
-            for j in range(a.camion[i],a.camion[i+1]):
-                output.write(str(a.tour[j])+";")
-                curr_money += cities[a.tour[j]].money
-                money += str(round(curr_money,2))+";"
-            output.write("0;\n")
-            output.write(money+"\n")
-
-
 
 init_state = chromosome.tour()
 rec = recuit(init_state)
@@ -94,9 +77,9 @@ for i in pareto:
 
 text_file.close()
 
-soltions_to_csv(pareto, "AnnealerSimulated")
+solutions_to_csv(pareto, "AnnealerSimulated")
 
-#Make a graph with the soltions
+#Make a graph with the solutions
 style.use('ggplot')
 f, ax = plt.subplots(1)
 plt.scatter(risk_p,dist_p,c="blue") # Pareto optimum colored in blue
