@@ -1,6 +1,8 @@
 import chromosome
 import random
 import copy
+from matplotlib import pyplot as plt
+from matplotlib import style
 
 
 class nsga2():
@@ -149,7 +151,7 @@ class nsga2():
         """ choose next generation population (no duplicate) """
 
         self.population.clear()
-        randomList = {}
+        """randomList = {}
         lenFront = len(self.front) - 1
         if lenFront > 0:
             while len(self.population) < self.popSize:
@@ -166,7 +168,20 @@ class nsga2():
                                 self.population.append(self.front[i][j])
                         else:
                             randomList[i] = [j]
-                            self.population.append(self.front[i][j])
+                            self.population.append(self.front[i][j])"""
+
+        for rank in self.front:
+
+            for solution in rank:
+                # check if the current solution is already in population
+                if not self.findDuplicate(solution, self.population):   
+                    if len(self.population) < self.popSize:
+                        self.population.append(solution)
+                    else:
+                        break
+
+            if len(self.population) >= self.popSize:
+                break
 
 
     def showResultPareto(self):
@@ -175,6 +190,8 @@ class nsga2():
         print("End result :")
 
         k = 0
+        risk_p = []
+        dist_p = []
 
         for rank in self.front:
             k += 1
@@ -184,9 +201,42 @@ class nsga2():
             else:
                 print("Rank Parreto!")
 
+            risk_p.append([])
+            dist_p.append([])
             for solution in rank:
                 tot_dist, tot_risk = solution.get_total_dist()
+                if k == 1:
+                    risk_p[0].append(tot_risk)
+                    dist_p[0].append(tot_dist)
+                else:
+                    risk_p[k-1].append(tot_risk)
+                    dist_p[k-1].append(tot_dist)
                 print("Solution avec tot dist {} et tot risk {}".format(tot_dist, tot_risk))
+        self.createPlot(risk_p, dist_p)
+
+    def createPlot(self, risk_p, dist_p):
+        
+        """text_file = open(str(self.popSize)+"_"+str(TIME_PER_SOL)+".txt", "w")
+        for i in pareto:
+            text_file.write(str(i)+"\n")
+
+        text_file.close()
+
+        soltions_to_csv(pareto, "AnnealerSimulated")"""
+
+        #Make a graph with the soltions
+        style.use('ggplot')
+        f, ax = plt.subplots(1)
+        plt.scatter(risk_p[0],dist_p[0],c="blue") # Pareto optimum colored in blue
+        plt.scatter(risk_p[1],dist_p[1],c="yellow") # Front 2 colored in yellow
+        plt.scatter(risk_p[2],dist_p[2],c="green") # Front 3 colored in green
+        plt.scatter(risk_p[3],dist_p[3],c="red") # Front 4 colored in red
+        plt.title('NSGA II')
+        plt.ylabel('Total Distance (m)')
+        plt.xlabel('Risk')
+        plt.autoscale(enable = True,axis='both')
+        plt.savefig(str(self.popSize)+"_str(TIME_PER_SOL).png")
+        plt.show()
 
     def execute(self):
 
