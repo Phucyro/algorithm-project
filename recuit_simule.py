@@ -4,9 +4,8 @@ import random
 import city_parser
 from matplotlib import pyplot as plt
 from matplotlib import style
+from CSV import solutions_to_csv
 
-NBRE_RES = 150 #Number of solutions that is going to be computed
-TIME_PER_SOL = 0.3 #Number of minutes allowed to optimize a solution
 
 class recuit(Annealer): #We use simanneal that implement the Annealer Simulated algorithm
 
@@ -89,7 +88,7 @@ class recuit_solver():
             dist.append(j.tot_dist)
 
 
-        text_file = open(str(NBRE_RES)+"_"+str(TIME_PER_SOL)+".txt", "w")
+        text_file = open(str(self.NBRE_RES)+"_"+str(self.TIME_PER_SOL)+".txt", "w")
         for i in pareto:
             text_file.write(str(i)+"\n")
 
@@ -106,5 +105,5 @@ class recuit_solver():
         plt.ylabel('Total Distance (m)')
         plt.xlabel('Risk')
         plt.autoscale(enable = True,axis='both')
-        plt.savefig(str(NBRE_RES)+"_"+str(TIME_PER_SOL)+".png")
+        plt.savefig(str(self.NBRE_RES)+"_"+str(self.TIME_PER_SOL)+".png")
         plt.show()
