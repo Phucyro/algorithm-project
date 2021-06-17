@@ -6,7 +6,7 @@ Therefore, each month, armored trucks leave the National Bank and pass by each m
 These trucks are subject of numerous lusts, especially from thieves and robbers.
 This is why the paths taken by these trucks are so important.
 
-Let's say that you have three thrucks:
+Let's say that you have three trucks:
 
 These tours must simultaneously:
 
