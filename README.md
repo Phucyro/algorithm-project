@@ -4,7 +4,7 @@
 Brussels region has 19 municipalities. There is still a significant part of the population who pays in cash.
 Therefore, each month, armored trucks leave the National Bank and pass by each municipality to recover the money.
 These trucks are subject of numerous lusts, especially from thieves and robbers.
-This is why the paths taken by these trucks are important.
+This is why the paths taken by these trucks are so important.
 
 Let's say that you have three thrucks:
 
